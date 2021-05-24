@@ -6,18 +6,18 @@ import { request as __request } from '../core/request';
 export class Service {
 
     /**
-     * @param int
+     * @param inputnumber2
      * @returns any
      * @throws ApiError
      */
     public static async test(
-        int: number,
+        inputnumber2: number,
     ): Promise<any> {
         const result = await __request({
             method: 'GET',
-            path: `/getint/${int}`,
+            path: `/getint/${inputnumber2}`,
             errors: {
-                404: `int not found`, 
+                404: `\`inputnumber2\` not found`,
             },
         });
         return result.body;

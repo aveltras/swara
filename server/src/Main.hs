@@ -15,29 +15,30 @@ import RIO hiding ((.~))
 import qualified RIO.ByteString.Lazy as BL
 import Servant
 import Servant.OpenApi
+import Squeal.PostgreSQL (ExceptT (ExceptT))
 
 main :: IO ()
 main = do
-  BL.writeFile "../openapi.json" (encodePretty apiSwagger)
+  BL.writeFile "../openapi.json" $ encodePretty apiSwagger
   run 8000 $ simpleCors app
 
 app :: Application
-app = serve api server
+app = serveWithContext api EmptyContext $ hoistServerWithContext api (Proxy :: Proxy '[]) (Servant.Handler . ExceptT . try . runRIO ()) server
 
 type API = GetInt
 
-type GetInt = "getint" :> Capture "int" Int :> Get '[JSON] Int
+type GetInt = "getint" :> Capture "inputnumber2" Int :> Get '[JSON] Int
 
 api :: Proxy API
 api = Proxy
 
-server :: Server API
-server = const $ pure 7
+server :: ServerT API (RIO env)
+server = pure
 
 apiSwagger :: OpenApi
 apiSwagger =
   toOpenApi (Proxy :: Proxy API)
-    & info . title .~ "Todo API"
+    & info . title .~ "Todo API22345"
     & info . version .~ "1.0"
     & info . description ?~ "This is an API that tests swagger integration"
     & info . license ?~ ("MIT" & url ?~ URL "http://mit.com")

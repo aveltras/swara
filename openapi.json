@@ -5,13 +5,13 @@
             "name": "MIT",
             "url": "http://mit.com"
         },
-        "title": "Todo API",
+        "title": "Todo API22345",
         "version": "1.0",
         "description": "This is an API that tests swagger integration"
     },
     "openapi": "3.0.0",
     "paths": {
-        "/getint/{int}": {
+        "/getint/{inputnumber2}": {
             "get": {
                 "operationId": "test",
                 "responses": {
@@ -28,7 +28,7 @@
                         "description": ""
                     },
                     "404": {
-                        "description": "`int` not found"
+                        "description": "`inputnumber2` not found"
                     }
                 },
                 "parameters": [
@@ -39,7 +39,7 @@
                             "type": "integer",
                             "maximum": 9223372036854775807
                         },
-                        "name": "int",
+                        "name": "inputnumber2",
                         "in": "path"
                     }
                 ]

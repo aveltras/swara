@@ -4,6 +4,7 @@ import "./App.css";
 import useAPI from "./hooks/useAPI";
 import useInstrument from "./hooks/useSound";
 import { Service } from "./services/openapi";
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -14,7 +15,7 @@ function App() {
 
   useEffect(async () => {
     try {
-      const num: int = await test(5);
+      const num: int = await test(8);
       setCount(num);
     } catch (error) {
       throw new Error(error);
@@ -23,8 +24,7 @@ function App() {
 
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
+      <header>
         <p>Hello Vite + React!</p>
         <p>
           <button onClick={() => play()}>play</button>
@@ -32,29 +32,23 @@ function App() {
             count is: {count}
           </button>
         </p>
-        <p>
-          Edit <code>App.tsx</code> and save to test HMR updates.
-        </p>
-        <p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-          {" | "}
-          <a
-            className="App-link"
-            href="https://vitejs.dev/guide/features.html"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Vite Docs
-          </a>
-        </p>
       </header>
+      <Router>
+        <nav>
+          <ul>
+            <li>
+              <Link to="/">Home</Link>
+              <Link to="/ragas">Ragas</Link>
+            </li>
+          </ul>
+        </nav>
+        <Switch>
+          <Route path="/ragas">Ragas</Route>
+          <Route exact path="/">
+            Home
+          </Route>
+        </Switch>
+      </Router>
     </div>
   );
 }

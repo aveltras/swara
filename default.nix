@@ -13,17 +13,26 @@ let
     };
   };
 
-  start-db = pkgs.writeShellScriptBin "start-db" ''
-    if [ ! -d $PGDATA ];then
-      ${pkgs.postgresql_13}/bin/initdb
-    fi
-    ${pkgs.postgresql_13}/bin/postgres -k ${projectDir}/.state/postgresql
-  '';
-
   procfile = pkgs.writeText "procfile" ''
     backend: cd ${projectDir} && ${pkgs.ghcid}/bin/ghcid --command "cabal repl server" -W -T :main
     frontend: cd ${projectDir}/client && ${pkgs.nodejs}/bin/npm run dev
-    database: ${start-db}/bin/start-db
+    database: ${pkgs.writeShellScriptBin "start-db" ''
+      if [ ! -d $PGDATA ];then
+        ${pkgs.postgresql_13}/bin/initdb
+      fi
+      ${pkgs.postgresql_13}/bin/postgres -k ${projectDir}/.state/postgresql
+    ''}/bin/start-db
+    openapi: ls ${projectDir}/openapi.json | ${pkgs.entr}/bin/entr ${pkgs.writeShellScriptBin "watch-openapi" ''
+      SOURCE="${projectDir}/openapi.json"
+      CHECKSUM=$(md5sum "$SOURCE" | awk '{ print $1 }')
+      FILE="${projectDir}/openapi.md5"
+
+      if [ ! -f "$FILE" ] || [ "$CHECKSUM" != "$(cat $FILE)" ];
+      then
+          ${projectDir}/client/node_modules/.bin/openapi -i "$SOURCE" -o ${projectDir}/client/src/services/openapi
+          echo $CHECKSUM > $FILE
+      fi
+    ''}/bin/watch-openapi
   '';
 
   shell = project.shellFor {
@@ -44,6 +53,7 @@ let
       pkgs.nodejs
       pkgs.nodePackages.prettier
       pkgs.overmind
+      pkgs.yarn
     ];
 
     OVERMIND_PROCFILE = procfile;

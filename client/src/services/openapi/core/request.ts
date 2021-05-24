@@ -94,7 +94,9 @@ async function getHeaders(options: ApiRequestOptions): Promise<Headers> {
     }
 
     if (options.body) {
-        if (isBlob(options.body)) {
+        if (options.mediaType) {
+            headers.append('Content-Type', options.mediaType);
+        } else if (isBlob(options.body)) {
             headers.append('Content-Type', options.body.type || 'application/octet-stream');
         } else if (isString(options.body)) {
             headers.append('Content-Type', 'text/plain');
@@ -110,7 +112,9 @@ function getRequestBody(options: ApiRequestOptions): BodyInit | undefined {
         return getFormData(options.formData);
     }
     if (options.body) {
-        if (isString(options.body) || isBlob(options.body)) {
+        if (options.mediaType?.includes('/json')) {
+            return JSON.stringify(options.body)
+        } else if (isString(options.body) || isBlob(options.body)) {
             return options.body;
         } else {
             return JSON.stringify(options.body);
