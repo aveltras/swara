@@ -1,0 +1,6 @@
+cradle:
+  multi:
+    - path: "./server"
+      config:
+        cradle:
+          cabal:
