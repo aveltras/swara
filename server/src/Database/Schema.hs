@@ -1,5 +1,6 @@
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE OverloadedLabels #-}
+{-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TypeOperators #-}
 
 module Database.Schema where
@@ -12,6 +13,18 @@ type Schema = Public Schema_v0
 type Schema_v0 =
   '[ "ragas" ::: 'Table (RagasK :=> RagasC)
    ]
+
+migrations :: Path (Migration (IsoQ Definition)) (Public '[]) Schema
+migrations = v0 :>> Done
+
+v0 :: Migration (IsoQ Definition) (Public '[]) Schema
+v0 =
+  Migration
+    "init"
+    IsoQ
+      { up = setup,
+        down = teardown
+      }
 
 setup :: Definition (Public '[]) Schema
 setup =

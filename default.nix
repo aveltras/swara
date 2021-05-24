@@ -35,7 +35,7 @@ let
     ''}/bin/watch-openapi
   '';
 
-  shell = project.shellFor {
+  shell = project.shellFor rec {
     packages = ps: with ps; [ server ];
     exactDeps = true;
     withHoogle = false;
@@ -49,15 +49,23 @@ let
     };
 
     buildInputs = [
+      pkgs.pgcli
       pkgs.nixpkgs-fmt
       pkgs.nodejs
       pkgs.nodePackages.prettier
       pkgs.overmind
+      pkgs.postgresql_13
       pkgs.yarn
     ];
 
     OVERMIND_PROCFILE = procfile;
     PGDATA = "${projectDir}/.state/postgresql/data";
+    PGHOST = "localhost";
+    PGPORT = 5432;
+    PGUSER = "postgres";
+    PGPASSWORD = "";
+    PGDATABASE = "swara";
+    DATABASE_URL = "postgres://${PGUSER}@${PGHOST}:${toString PGPORT}/${PGDATABASE}";
   };
 
 in

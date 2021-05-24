@@ -13,17 +13,32 @@ import Network.Wai.Handler.Warp
 import Network.Wai.Middleware.Cors
 import RIO hiding ((.~))
 import qualified RIO.ByteString.Lazy as BL
+import qualified RIO.Text as T
 import Servant
 import Servant.OpenApi
-import Squeal.PostgreSQL (ExceptT (ExceptT))
+import Squeal.PostgreSQL
+import System.Environment
 
 main :: IO ()
 main = do
   BL.writeFile "../openapi.json" $ encodePretty apiSwagger
+
+  connStr <- encodeUtf8 . T.pack <$> getEnv "DATABASE_URL"
+  pool <- createConnectionPool connStr 1 10 1
+
+  withConnection connStr $ migrateUp migrations
+
+  -- withConnection "host=localhost  dbname=exampledb user=postgres password=postgres" $
+  -- pure ()
+  -- define setup
+  -- & pqThen session
+  -- & pqThen (define teardown)
   run 8000 $ simpleCors app
 
 app :: Application
-app = serveWithContext api EmptyContext $ hoistServerWithContext api (Proxy :: Proxy '[]) (Servant.Handler . ExceptT . try . runRIO ()) server
+app =
+  serveWithContext api EmptyContext $
+    hoistServerWithContext api (Proxy :: Proxy '[]) (Servant.Handler . ExceptT . try . runRIO ()) server
 
 type API = GetInt
 
@@ -38,8 +53,8 @@ server = pure
 apiSwagger :: OpenApi
 apiSwagger =
   toOpenApi (Proxy :: Proxy API)
-    & info . title .~ "Todo API22345"
+    & info . title .~ "Swara API"
     & info . version .~ "1.0"
-    & info . description ?~ "This is an API that tests swagger integration"
+    -- & info . description ?~ "This is an API that tests swagger integration"
     & info . license ?~ ("MIT" & url ?~ URL "http://mit.com")
     & subOperations (Proxy :: Proxy GetInt) (Proxy :: Proxy API) . operationId ?~ ("test" :: Text)
