@@ -21,6 +21,9 @@ let
       hlint = "latest";
       haskell-language-server = "latest";
     };
+    buildInputs = [
+      pkgs.nodejs
+    ];
   };
   
 in { inherit project shell; }
