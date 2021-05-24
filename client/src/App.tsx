@@ -2,12 +2,15 @@ import React, { useEffect, useState } from "react";
 import logo from "./logo.svg";
 import "./App.css";
 import useAPI from "./hooks/useAPI";
+import useInstrument from "./hooks/useSound";
 import { Service } from "./services/openapi";
 
 function App() {
   const [count, setCount] = useState(0);
   const { handleRequest } = useAPI();
   const { test } = Service;
+
+  const { play } = useInstrument();
 
   useEffect(async () => {
     try {
@@ -24,6 +27,7 @@ function App() {
         <img src={logo} className="App-logo" alt="logo" />
         <p>Hello Vite + React!</p>
         <p>
+          <button onClick={() => play()}>play</button>
           <button onClick={() => setCount((count) => count + 1)}>
             count is: {count}
           </button>
