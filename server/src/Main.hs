@@ -6,15 +6,20 @@
 module Main where
 
 import Control.Lens
+import Data.Aeson.Encode.Pretty (encodePretty)
 import Data.OpenApi hiding (Server, server)
+import Database.Schema
 import Network.Wai.Handler.Warp
 import Network.Wai.Middleware.Cors
 import RIO hiding ((.~))
+import qualified RIO.ByteString.Lazy as BL
 import Servant
 import Servant.OpenApi
 
 main :: IO ()
-main = run 8000 $ simpleCors app
+main = do
+  BL.writeFile "../openapi.json" (encodePretty apiSwagger)
+  run 8000 $ simpleCors app
 
 app :: Application
 app = serve api server
@@ -23,15 +28,11 @@ type API = GetInt
 
 type GetInt = "getint" :> Capture "int" Int :> Get '[JSON] Int
 
-type SwaggerAPI = "swagger.json" :> Get '[JSON] OpenApi
-
-type FullAPI = SwaggerAPI :<|> API
-
-api :: Proxy FullAPI
+api :: Proxy API
 api = Proxy
 
-server :: Server FullAPI
-server = pure apiSwagger :<|> \_ -> pure 7
+server :: Server API
+server = const $ pure 7
 
 apiSwagger :: OpenApi
 apiSwagger =

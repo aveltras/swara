@@ -1,0 +1,49 @@
+{
+    "components": {},
+    "info": {
+        "license": {
+            "name": "MIT",
+            "url": "http://mit.com"
+        },
+        "title": "Todo API",
+        "version": "1.0",
+        "description": "This is an API that tests swagger integration"
+    },
+    "openapi": "3.0.0",
+    "paths": {
+        "/getint/{int}": {
+            "get": {
+                "operationId": "test",
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json;charset=utf-8": {
+                                "schema": {
+                                    "minimum": -9223372036854775808,
+                                    "type": "integer",
+                                    "maximum": 9223372036854775807
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "404": {
+                        "description": "`int` not found"
+                    }
+                },
+                "parameters": [
+                    {
+                        "required": true,
+                        "schema": {
+                            "minimum": -9223372036854775808,
+                            "type": "integer",
+                            "maximum": 9223372036854775807
+                        },
+                        "name": "int",
+                        "in": "path"
+                    }
+                ]
+            }
+        }
+    }
+}

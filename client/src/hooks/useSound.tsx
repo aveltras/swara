@@ -7,8 +7,12 @@ export default function useInstrument() {
   useEffect(async () => {
     const audioContext = new (window.AudioContext ||
       ((window as any).webkitAudioContext as typeof AudioContext))();
-    const player = await Soundfont.instrument(audioContext, "sitar", {
-      soundfont: "FluidR3_GM",
+    const player = await Soundfont.instrument(audioContext, "tada", {
+      soundfont: "Tabla",
+      isSoundfontURL: () => false,
+      nameToUrl: (name, sf, format) => {
+        return "https://gleitz.github.io/midi-js-soundfonts/Tabla/synth_drum-mp3.js";
+      },
     });
 
     setPlayer(player);
@@ -22,13 +26,13 @@ export default function useInstrument() {
 
   const play = useCallback(() => {
     player.schedule(0, [
-      { time: 0, note: "C3" },
-      { time: 0.5, note: "D3" },
-      { time: 1, note: "E3" },
-      { time: 1.5, note: "F3" },
-      { time: 2, note: "G3" },
-      { time: 2.5, note: "A4" },
-      { time: 3, note: "B4" },
+      { time: 0, note: "C4" },
+      { time: 0.5, note: "D4" },
+      { time: 1, note: "E4" },
+      { time: 1.5, note: "F4" },
+      { time: 2, note: "G4" },
+      { time: 2.5, note: "A5" },
+      { time: 3, note: "B5" },
       /* { time: 0.2, note: "D4" }, */
       /* { time: 1, note: "E4" }, */
     ]);
