@@ -1,9 +1,22 @@
-import React, { useState } from 'react'
-import logo from './logo.svg'
-import './App.css'
+import React, { useEffect, useState } from "react";
+import logo from "./logo.svg";
+import "./App.css";
+import useAPI from "./hooks/useAPI";
+import { Service } from "./services/openapi";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(0);
+  const { handleRequest } = useAPI();
+  const { test } = Service;
+
+  useEffect(async () => {
+    try {
+      const num: int = await test(5);
+      setCount(num);
+    } catch (error) {
+      throw new Error(error);
+    }
+  }, []);
 
   return (
     <div className="App">
@@ -27,7 +40,7 @@ function App() {
           >
             Learn React
           </a>
-          {' | '}
+          {" | "}
           <a
             className="App-link"
             href="https://vitejs.dev/guide/features.html"
@@ -39,7 +52,7 @@ function App() {
         </p>
       </header>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

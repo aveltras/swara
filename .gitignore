@@ -2,4 +2,5 @@
 /.state
 /dist-newstyle
 
+/.overmind.sock
 /cabal.project.local

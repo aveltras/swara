@@ -33,7 +33,7 @@ let
 
     tools = {
       cabal = "latest";
-      cabal-fmt = "latest";
+      # cabal-fmt = "latest";
       ghcid = "latest";
       hlint = "latest";
       haskell-language-server = "latest";

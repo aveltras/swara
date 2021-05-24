@@ -9,9 +9,13 @@ executable server
   default-language:   Haskell2010
   default-extensions: NoImplicitPrelude
   build-depends:
-    , base
+      base
+    , lens
+    , openapi3
     , rio
     , servant
+    , servant-openapi3
     , servant-server
     , squeal-postgresql
+    , wai-cors
     , warp
